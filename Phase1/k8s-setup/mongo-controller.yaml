@@ -21,6 +21,12 @@ spec:
         volumeMounts:
             - name: mongo-persistent-storage
               mountPath: /data/db
+      - image: kadle11/student-node-server:localhost-access
+        name: student-server
+        ports:
+        - name: student-server
+          containerPort: 3000
+          hostPort: 3000
       volumes:
         - name: mongo-persistent-storage
           hostPath: 

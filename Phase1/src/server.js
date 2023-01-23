@@ -1,11 +1,11 @@
-const MONGO_URL = "mongodb://mongo:27017";
+const MONGO_URL = 'mongodb://localhost:27017';
 const Student = require('./student_schema.js');
 
 const mongoose = require('mongoose');
 const express = require('express');
 
 
-mongoose.connect(MONGO_URL, { useNewUrlParser: true });
+mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 const conn = mongoose.connection;
 try {
     conn.on('open', () => {
@@ -16,6 +16,7 @@ try {
 }
 
 const app = express();
+app.use(express.json());
 
 app.get("/student/:roll", async (req, res) => {
 
@@ -25,15 +26,33 @@ app.get("/student/:roll", async (req, res) => {
     let student = { name: result.name, registration: result.registration, roll: result.roll }
 
     // res.header('Connection', "keep-alive")
-    res.set("Keep-Alive", "timeout=5, max=0");
+    // res.set("Keep-Alive", "timeout=5, max=0");
     res.status(200).json(student);
-    
 
+
+})
+
+app.post("/student", async (req, res) => {
+
+    const newstudent = new Student({
+        name: req.body.name,
+        roll: req.body.roll,
+        registration: req.body.registration,
+    })
+
+    try {
+        await newstudent.save();
+        console.log("[Record Inserted]", newstudent.name);
+        res.status(201).send()
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
 })
 
 var server = app.listen(3000, "0.0.0.0", function (err) {
     if (err) {
         console.log("[Error] Unable to start server.");
     }
-    console.log("Started Server on 7000");
+    console.log("Started Server on 3000");
 })

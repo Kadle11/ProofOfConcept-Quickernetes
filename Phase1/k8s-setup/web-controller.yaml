@@ -14,8 +14,9 @@ spec:
         name: web
     spec:
       containers:
-      - image: kadle11/student-node-server
+      - image: kadle11/student-node-server:latest
         name: web
         ports:
         - containerPort: 3000
           name: http-server
+        imagePullPolicy: Always

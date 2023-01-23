@@ -1,14 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: web
+  name: student-database
   labels:
-    name: web
+    name: student-database
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
-    - port: 80
+    - port: 3000
       targetPort: 3000
-      protocol: TCP
+      nodePort: 32000
+      name: student-database
   selector:
-    name: web
+    name: mongo
