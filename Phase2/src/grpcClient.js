@@ -1,9 +1,11 @@
 const PROTO_PATH = './students.proto'
-const SERVER_ADDR = 'localhost:7000'
+const SERVER_ADDR = 'node2:7000'
 
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const express = require('express');
+const EventEmitter = require('node:events');
+
 
 const serverPackageDefinition = protoLoader.loadSync(
     PROTO_PATH,
@@ -26,20 +28,23 @@ const studentStream = client.streamStudent()
 const app = express();
 app.use(express.json());
 
+const responseListener = new EventEmitter();
+var studentList = []
+
+studentStream.on("data", function (student) {
+    responseListener.emit(student.roll, student)
+})
+
+studentStream.on("error", async => {
+})
+
+studentStream.on("end", async => {
+})
+
 app.get("/student/:roll", async (req, res) => {
-
-    //console.log(req.params.roll)
-    studentStream.write({"roll":req.params.roll})
-    studentStream.on("data", async (student) => {
-        if (student.roll == req.params.roll) {
-            res.status(200).json(student)
-        }
-    })
-
-    studentStream.on("error", async => {
-    })
-
-    studentStream.on("end", async => {
+    studentStream.write({ "roll": req.params.roll })
+    responseListener.once(req.params.roll, function (student) {
+        res.status(200).json(student)
     })
 })
 
