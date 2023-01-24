@@ -28,7 +28,7 @@ Server.addService(students.StudentLookup.service, {
 
 async function streamStudent(call) {
 
-    call.on("data", function(roll) {
+    call.on("data", async function(roll) {
         //console.log("Request for", roll, "recieved at", Date.now())
         axios.get('http://node2:32000/student/' + roll.roll)
             .then(response => {

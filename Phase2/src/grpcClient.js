@@ -31,7 +31,7 @@ app.use(express.json());
 const responseListener = new EventEmitter();
 var studentList = []
 
-studentStream.on("data", function (student) {
+studentStream.on("data", async function (student) {
     responseListener.emit(student.roll, student)
 })
 
@@ -43,7 +43,7 @@ studentStream.on("end", async => {
 
 app.get("/student/:roll", async (req, res) => {
     studentStream.write({ "roll": req.params.roll })
-    responseListener.once(req.params.roll, function (student) {
+    responseListener.once(req.params.roll, async function (student) {
         res.status(200).json(student)
     })
 })
