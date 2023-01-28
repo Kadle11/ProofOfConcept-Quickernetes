@@ -14,7 +14,7 @@ spec:
         name: web
     spec:
       containers:
-      - image: kadle11/student-node-server:latest
+      - image: kadle11/student-node-server:cluster-ip
         name: web
         ports:
         - containerPort: 3000
