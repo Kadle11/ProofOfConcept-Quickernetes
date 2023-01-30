@@ -14,9 +14,21 @@ spec:
         name: web
     spec:
       containers:
-      - image: kadle11/student-node-server:cluster-ip
+      - image: kadle11/student-node-server:gRPC
         name: web
+        command: ["node", "grpcServer.js", "mongo"]
         ports:
-        - containerPort: 3000
-          name: http-server
+          - containerPort: 3000
+            name: http-server
         imagePullPolicy: Always
+      nodeSelector:
+          id: worker1
+      # Sidecar results in a failure to connect to MongoDB
+      # Link: https://github.com/kubernetes/kubernetes/issues/61207
+      # - image: kadle11/grpc-sidecar
+      #   name: grpc-server
+      #   command: ["node", "grpcServer.js"]
+      #   ports:
+      #     - containerPort: 7000
+      #       name: grpc-server
+      #   imagePullPolicy: Always      

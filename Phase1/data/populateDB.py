@@ -5,7 +5,7 @@ from random import sample
 
 # defining the api-endpoint
 # API_ENDPOINT = "http://localhost:8001/api/v1/proxy/namespaces/default/services/mongo:3000/student"
-API_ENDPOINT = "http://node2:32000/student"
+API_ENDPOINT = "http://node1:32000/student"
 
 subjectList = ['Computer Science', 'Math',
                'English', 'Chemistry', 'Physics', 'Biology']
@@ -26,5 +26,4 @@ with open("./data.csv") as csvFile:
                 'registration': row[1][0] + row[2] + str(rollCall),
                 'subjects': sample(subjectList, 3)}
             r = requests.post(url=API_ENDPOINT, data=json.dumps(data), headers=headers)
-            print(r.text)
             rollCall = rollCall + 1

@@ -1,8 +1,11 @@
-const MONGO_URL = 'mongodb://localhost:27017';
 const Student = require('./student_schema.js');
 
 const mongoose = require('mongoose');
 const express = require('express');
+const process = require('process');
+
+const MONGO_URL = 'mongodb://' + process.argv[2] + ':27017';
+
 
 
 mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });

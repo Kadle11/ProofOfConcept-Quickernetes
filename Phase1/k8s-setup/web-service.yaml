@@ -11,5 +11,9 @@ spec:
       targetPort: 3000
       nodePort: 32000
       name: student-database
+    - port: 7000
+      targetPort: 7000
+      nodePort: 32500
+      name: grpc-server
   selector:
     name: web
