@@ -5,7 +5,7 @@ from random import sample
 
 # defining the api-endpoint
 # API_ENDPOINT = "http://localhost:8001/api/v1/proxy/namespaces/default/services/mongo:3000/student"
-API_ENDPOINT = "http://node1:32000/student"
+API_ENDPOINT = "http://localhost:3000/student"
 
 subjectList = ['Computer Science', 'Math',
                'English', 'Chemistry', 'Physics', 'Biology']

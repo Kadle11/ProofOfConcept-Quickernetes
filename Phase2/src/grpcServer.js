@@ -6,9 +6,10 @@ const protoLoader = require('@grpc/proto-loader');
 const mongoose = require('mongoose');
 const express = require('express');
 const process = require('process');
+const opentelemetry = require("@opentelemetry/api");
 
+const tracer = require('./trace')(('grpc-server'));
 const MONGO_URL = 'mongodb://' + process.argv[2] + ':27017';
-
 
 mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 const conn = mongoose.connection;
@@ -25,9 +26,9 @@ app.use(express.json());
 
 app.get("/student/:roll", async (req, res) => {
 
-    //console.log(req.protocol)
-
     let result = await Student.findOne({ roll: req.params.roll });
+    span1.end()
+
     let student = { name: result.name, registration: result.registration, roll: result.roll }
 
     // res.header('Connection', "keep-alive")
@@ -88,9 +89,19 @@ async function streamStudent(call) {
 
     call.on("data", async function (roll) {
         //console.log("Request for", roll, "recieved at", Date.now())
+
+        ctxObj = JSON.parse(roll.traceObj);
+        const ctx = opentelemetry.propagation.extract(opentelemetry.ROOT_CONTEXT, ctxObj)
+
+        const span1 = tracer.startSpan('server.js:mongo()', { kind: 1 }, ctx)
         let result = await Student.findOne({ roll: roll.roll });
+        span1.end()
+
+        const span2 = tracer.startSpan('gRPCServerStream:write()', { kind: 1 }, ctx)
+
         let student = { name: result.name, registration: result.registration, roll: result.roll }
         call.write(student);
+        span2.end()
     })
 
     call.on("error", () => {
@@ -118,7 +129,7 @@ async function addStudent(call, callback) {
         console.log(err);
         res.status(500).send(err);
     }
-    
+
     console.log("[Record Inserted]", call.request.name);
     callback(null);
 }

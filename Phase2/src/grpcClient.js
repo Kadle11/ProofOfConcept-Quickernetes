@@ -3,11 +3,15 @@ const protoLoader = require('@grpc/proto-loader');
 const express = require('express');
 const EventEmitter = require('node:events');
 const process = require('process')
+const opentelemetry = require("@opentelemetry/api");
 
 const PROTO_PATH = './students.proto'
 const SERVER_ADDR = process.argv[2]
 
 // console.log("Server Address: ", SERVER_ADDR)
+
+const tracer = require('./trace')(('grpc-client'));
+
 
 const serverPackageDefinition = protoLoader.loadSync(
     PROTO_PATH,
@@ -33,7 +37,6 @@ app.use(express.json());
 const responseListener = new EventEmitter();
 
 studentStream.on("data", async function (student) {
-    // console.log("Recieved data from gRPC Server for student", student.roll)
     responseListener.emit(student.roll, student)
 })
 
@@ -45,9 +48,28 @@ studentStream.on("end", async => {
 
 app.get("/student/:roll", async (req, res) => {
     // console.log("Recieved request from client for student", req.params.roll)
-    studentStream.write({ "roll": req.params.roll })
-    responseListener.once(req.params.roll, async function (student) {
-        res.status(200).json(student)
+    const span = tracer.startSpan('client.js:GET()');
+    const requestCtx = opentelemetry.trace.setSpan(opentelemetry.context.active(), span)
+    opentelemetry.context.with(requestCtx, () => {
+        const ctx = opentelemetry.context.active()
+
+        ctxObj = {}
+        opentelemetry.propagation.inject(requestCtx, ctxObj)
+        ctxObjStr = JSON.stringify(ctxObj)
+
+        const span1 = tracer.startSpan('gRPCClientStream:write()', { kind: 2 }, ctx)
+        span1.addEvent('Sending Roll to Server')
+        studentStream.write({ "roll": req.params.roll, "traceObj": ctxObjStr })
+        span1.end()
+
+        const span2 = tracer.startSpan('client.js:EventListener', { kind: 2 }, ctx)
+        span2.addEvent('Waiting for response')
+        responseListener.once(req.params.roll, async function (student) {
+            res.status(200).json(student)
+        })
+        span2.end()
+
+        span.end()
     })
 })
 
@@ -73,7 +95,7 @@ app.post("/student", async (req, res) => {
     });
 })
 
-var server = app.listen(3000, "0.0.0.0", function (err) {
+var server = app.listen(8080, "0.0.0.0", function (err) {
     if (err) {
         console.log("[Error] Unable to start server.");
     }

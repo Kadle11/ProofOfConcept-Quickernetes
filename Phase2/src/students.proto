@@ -15,4 +15,7 @@ message Student {
   int64 roll = 3;
 }
 
-message Roll { int64 roll = 1; }
+message Roll { 
+  int64 roll = 1; 
+  string traceObj = 2;
+}
