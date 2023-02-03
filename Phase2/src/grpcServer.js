@@ -8,7 +8,7 @@ const express = require('express');
 const process = require('process');
 const opentelemetry = require("@opentelemetry/api");
 
-const tracer = require('./trace')(('grpc-server'));
+const tracer = require('./trace')(('grpc-tunnel-server'));
 const MONGO_URL = 'mongodb://' + process.argv[2] + ':27017';
 
 mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });

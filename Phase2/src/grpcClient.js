@@ -10,7 +10,7 @@ const SERVER_ADDR = process.argv[2]
 
 // console.log("Server Address: ", SERVER_ADDR)
 
-const tracer = require('./trace')(('grpc-client'));
+const tracer = require('./trace')(('grpc-tunnel-client'));
 
 
 const serverPackageDefinition = protoLoader.loadSync(

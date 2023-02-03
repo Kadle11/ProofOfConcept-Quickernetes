@@ -6,31 +6,30 @@ const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventi
 const { ConsoleSpanExporter, BatchSpanProcessor, SimpleSpanProcessor } = require("@opentelemetry/sdk-trace-base");
 const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
 const { GrpcInstrumentation } = require('@opentelemetry/instrumentation-grpc');
-
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
-const provider = new NodeTracerProvider({
-    resource: new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: 'gRPC-tunnel',
-    }),
-});
-
-registerInstrumentations({
-    tracerProvider: provider,
-    instrumentations: [
-        new GrpcInstrumentation(),
-    ]
-});
-
-provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
-
-const globalTracerProvider = opentelemetry.trace.setGlobalTracerProvider(provider);
-
-// Initialize the OpenTelemetry APIs to use the NodeTracerProvider bindings
-provider.register();
 
 module.exports = (serviceName) => {
-
+    const provider = new NodeTracerProvider({
+        resource: new Resource({
+            [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
+        }),
+    });
+    
+    registerInstrumentations({
+        tracerProvider: provider,
+        instrumentations: [
+            new GrpcInstrumentation(),
+        ]
+    });
+    
+    provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
+    
+    const globalTracerProvider = opentelemetry.trace.setGlobalTracerProvider(provider);
+    
+    // Initialize the OpenTelemetry APIs to use the NodeTracerProvider bindings
+    provider.register();
+    
     const exporter = new JaegerExporter({
         serviceName,
         endpoint: 'http://localhost:14268/api/traces'
