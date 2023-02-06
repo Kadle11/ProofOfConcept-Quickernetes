@@ -14,7 +14,16 @@ const ws = new WebSocket('ws://' + SERVER_ADDR, {
     perMessageDeflate: false
 });
 
+const responseListener = new EventEmitter();
+
 ws.on('error', console.error);
+
+ws.on('message', async function (data) {
+
+    let student = JSON.parse(data)
+    responseListener.emit(student.roll, student)
+
+})
 
 app.get("/student/:roll", async (req, res) => {
     // console.log("Recieved request from client for student", req.params.roll)
@@ -26,14 +35,10 @@ app.get("/student/:roll", async (req, res) => {
 
     ws.send(req.params.roll)
 
-    ws.on('message', async function (data) {
-
-        let student = JSON.parse(data)
-        if (student.roll != req.params.roll) {
-            console.log("Need this check!")
-        }
-        res.json(student).send()
+    responseListener.once(req.params.roll, async function (student) {
+        res.status(200).json(student)
     })
+
 
 })
 
@@ -46,7 +51,7 @@ app.post("/student", async (req, res) => {
 
 })
 
-var server = app.listen(4000, "0.0.0.0", function (err) {
+var server = app.listen(3000, "0.0.0.0", function (err) {
     if (err) {
         console.log("[Error] Unable to start server.");
     }
