@@ -49,6 +49,7 @@ studentStream.on("end", async => {
 app.get("/student/:roll", async (req, res) => {
     // console.log("Recieved request from client for student", req.params.roll)
     const span = tracer.startSpan('client.js:GET()');
+    // console.log(span)
     const requestCtx = opentelemetry.trace.setSpan(opentelemetry.context.active(), span)
     opentelemetry.context.with(requestCtx, () => {
         const ctx = opentelemetry.context.active()
@@ -58,18 +59,15 @@ app.get("/student/:roll", async (req, res) => {
         ctxObjStr = JSON.stringify(ctxObj)
 
         const span1 = tracer.startSpan('gRPCClientStream:write()', { kind: 2 }, ctx)
-        span1.addEvent('Sending Roll to Server')
+        span.addEvent('QueryData --> Stream')
         studentStream.write({ "roll": req.params.roll, "traceObj": ctxObjStr })
         span1.end()
 
-        const span2 = tracer.startSpan('client.js:EventListener', { kind: 2 }, ctx)
-        span2.addEvent('Waiting for response')
         responseListener.once(req.params.roll, async function (student) {
             res.status(200).json(student)
+            span.addEvent('Stream --> ResponseData')
+            span.end()
         })
-        span2.end()
-
-        span.end()
     })
 })
 

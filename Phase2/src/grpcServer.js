@@ -27,7 +27,6 @@ app.use(express.json());
 app.get("/student/:roll", async (req, res) => {
 
     let result = await Student.findOne({ roll: req.params.roll });
-    span1.end()
 
     let student = { name: result.name, registration: result.registration, roll: result.roll }
 
@@ -98,7 +97,6 @@ async function streamStudent(call) {
         span1.end()
 
         const span2 = tracer.startSpan('gRPCServerStream:write()', { kind: 1 }, ctx)
-
         let student = { name: result.name, registration: result.registration, roll: result.roll }
         call.write(student);
         span2.end()
