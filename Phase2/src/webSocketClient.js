@@ -7,8 +7,8 @@ const WebSocket = require('ws');
 const SERVER_ADDR = process.argv[2]
 const tracer = require('./trace')(('grpc-tunnel-client'));
 
-const app = express();
-app.use(express.json());
+const ws_app = express();
+ws_app.use(express.json());
 
 const ws = new WebSocket('ws://' + SERVER_ADDR, {
     perMessageDeflate: false
@@ -25,13 +25,7 @@ ws.on('message', async function (data) {
 
 })
 
-app.get("/student/:roll", async (req, res) => {
-    // console.log("Recieved request from client for student", req.params.roll)
-
-    // const span = tracer.startSpan('client.js:GET()');
-    // const requestCtx = opentelemetry.trace.setSpan(opentelemetry.context.active(), span)
-    // opentelemetry.context.with(requestCtx, () => {
-    // })
+ws_app.get("/student/:roll", async (req, res) => {
 
     ws.send(req.params.roll)
 
@@ -42,7 +36,7 @@ app.get("/student/:roll", async (req, res) => {
 
 })
 
-app.post("/student", async (req, res) => {
+ws_app.post("/student", async (req, res) => {
 
     var student = {};
     student.name = req.body.name;
@@ -51,9 +45,9 @@ app.post("/student", async (req, res) => {
 
 })
 
-var server = app.listen(3000, "0.0.0.0", function (err) {
+ws_app.listen(3000, "0.0.0.0", function (err) {
     if (err) {
         console.log("[Error] Unable to start server.");
     }
-    console.log("Started Server on 3000");
+    console.log("Started WS Server on 3000");
 })
