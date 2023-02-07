@@ -12,26 +12,25 @@ spec:
         name: mongo
     spec:
       containers:
-      - image: mongo
-        name: mongo
-        ports:
-        - name: mongo
-          containerPort: 27017
-          hostPort: 27017
-        volumeMounts:
+        - image: mongo
+          name: mongo
+          ports:
+            - name: mongo
+              containerPort: 27017
+              hostPort: 27017
+          volumeMounts:
             - name: mongo-persistent-storage
               mountPath: /data/db
-      - image: kadle11/student-node-server:localhost-access
-        name: student-server
-        ports:
-        - name: student-server
-          containerPort: 3000
-          hostPort: 3000
+        - image: kadle11/student-node-server:localhost-access
+          name: student-server
+          ports:
+            - name: student-server
+              containerPort: 3000
+              hostPort: 3000
       nodeSelector:
-          id: worker1
+        kubernetes.io/hostname: node1
       volumes:
         - name: mongo-persistent-storage
-          hostPath: 
+          hostPath:
             path: /data/mongo-storage
             type: DirectoryOrCreate
- 

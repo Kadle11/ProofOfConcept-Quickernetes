@@ -22,4 +22,4 @@ spec:
               name: ws-client
           imagePullPolicy: Always
       nodeSelector:
-          id: worker2
+        kubernetes.io/hostname: node2
