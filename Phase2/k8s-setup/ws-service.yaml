@@ -9,7 +9,7 @@ spec:
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 31500
+      nodePort: 31000
       name: ws-client
   selector:
     name: ws-client

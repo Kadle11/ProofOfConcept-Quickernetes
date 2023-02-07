@@ -14,9 +14,9 @@ spec:
         name: ws-client
     spec:
       containers:
-        - image: kadle11/grpc-client
+        - image: kadle11/ws-sidecar:latest
           name: ws-client
-          command: ["node", "webSocketClient.js", "student-node-app:8080"]
+          command: ["node", "webSocketClient.js", "app:8080"]
           ports:
             - containerPort: 3000
               name: ws-client

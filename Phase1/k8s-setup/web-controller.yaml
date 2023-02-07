@@ -24,8 +24,8 @@ spec:
         # Sidecar results in a failure to connect to MongoDB
         # Link: https://github.com/kubernetes/kubernetes/issues/61207
         # Fix: DNS Server Check - https://help.hcltechsw.com/connections/v6/admin/install/cp_prereq_kubernetes_dns.html
-        - image: kadle11/ws-sidecar
-          name: grpc-server
+        - image: kadle11/ws-sidecar:latest
+          name: ws-server
           command: ["node", "webSocketServer.js"]
           ports:
             - containerPort: 8080
