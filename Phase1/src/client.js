@@ -14,9 +14,9 @@ app.get("/student/:roll", async (req, res) => {
     })
 })
 
-app.listen(4000, "0.0.0.0", function (err) {
+app.listen(7000, "0.0.0.0", function (err) {
     if (err) {
         console.log("[Error] Unable to start server.");
     }
-    console.log("Started Server on 4000");
+    console.log("Started Server on 7000");
 })

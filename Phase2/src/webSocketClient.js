@@ -32,8 +32,6 @@ ws_app.get("/student/:roll", async (req, res) => {
     responseListener.once(req.params.roll, async function (student) {
         res.status(200).json(student)
     })
-
-
 })
 
 ws_app.post("/student", async (req, res) => {

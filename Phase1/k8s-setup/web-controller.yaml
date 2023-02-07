@@ -2,33 +2,34 @@ apiVersion: v1
 kind: ReplicationController
 metadata:
   labels:
-    name: web
-  name: web-controller
+    name: student-node-app
+  name: student-node-app
 spec:
   replicas: 1
   selector:
-    name: web
+    name: student-node-app
   template:
     metadata:
       labels:
-        name: web
+        name: student-node-app
     spec:
       containers:
-      - image: kadle11/student-node-server:gRPC
-        name: web
-        command: ["node", "grpcServer.js", "mongo"]
+      - image: kadle11/student-node-app:latest
+        name: student-node-app
+        command: ["node", "server.js", "mongo"]
         ports:
           - containerPort: 3000
             name: http-server
         imagePullPolicy: Always
-      nodeSelector:
-          id: worker1
       # Sidecar results in a failure to connect to MongoDB
       # Link: https://github.com/kubernetes/kubernetes/issues/61207
-      # - image: kadle11/grpc-sidecar
-      #   name: grpc-server
-      #   command: ["node", "grpcServer.js"]
-      #   ports:
-      #     - containerPort: 7000
-      #       name: grpc-server
-      #   imagePullPolicy: Always      
+      # Fix: DNS Server Check - https://help.hcltechsw.com/connections/v6/admin/install/cp_prereq_kubernetes_dns.html
+      - image: kadle11/ws-sidecar
+        name: grpc-server
+        command: ["node", "webSocketServer.js"]
+        ports:
+          - containerPort: 8080
+            name: ws-server
+        imagePullPolicy: Always      
+      nodeSelector:
+          id: worker1

@@ -27,8 +27,11 @@ spec:
         - name: student-server
           containerPort: 3000
           hostPort: 3000
+      nodeSelector:
+          id: worker1
       volumes:
         - name: mongo-persistent-storage
           hostPath: 
             path: /data/mongo-storage
             type: DirectoryOrCreate
+ 

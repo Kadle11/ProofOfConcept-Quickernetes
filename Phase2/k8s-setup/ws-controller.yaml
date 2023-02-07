@@ -2,24 +2,24 @@ apiVersion: v1
 kind: ReplicationController
 metadata:
   labels:
-    name: grpc-client
-  name: grpc-client
+    name: ws-client
+  name: ws-client
 spec:
   replicas: 1
   selector:
-    name: grpc-client
+    name: ws-client
   template:
     metadata:
       labels:
-        name: grpc-client
+        name: ws-client
     spec:
       containers:
         - image: kadle11/grpc-client
-          name: grpc-client
-          command: ["node", "grpcClient.js", "student-database:7000"]
+          name: ws-client
+          command: ["node", "webSocketClient.js", "student-node-app:8080"]
           ports:
             - containerPort: 3000
-              name: grpc-client
+              name: ws-client
           imagePullPolicy: Always
       nodeSelector:
           id: worker2
