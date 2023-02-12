@@ -1,3 +1,6 @@
 [submodule "Phase1/wkld/wrk2"]
 	path = Phase1/wkld/wrk2
 	url = https://github.com/giltene/wrk2.git
+[submodule "metrics-server"]
+	path = metrics-server
+	url = https://github.com/kubernetes-sigs/metrics-server.git
