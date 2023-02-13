@@ -5,7 +5,7 @@ metadata:
   labels:
     name: client-app
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - port: 7000
       targetPort: 7000

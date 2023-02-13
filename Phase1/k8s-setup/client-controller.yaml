@@ -22,5 +22,8 @@ spec:
             - containerPort: 7000
               name: http-server
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
       nodeSelector:
         kubernetes.io/hostname: node2

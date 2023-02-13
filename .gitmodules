@@ -4,3 +4,6 @@
 [submodule "metrics-server"]
 	path = metrics-server
 	url = https://github.com/kubernetes-sigs/metrics-server.git
+[submodule "Phase1/wkld/wrk"]
+	path = Phase1/wkld/wrk
+	url = https://github.com/wg/wrk.git

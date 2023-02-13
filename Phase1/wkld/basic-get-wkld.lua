@@ -9,7 +9,7 @@ request = function()
   local method = "GET"
   local headers = {}
 
-  local path = "http://node2:31500/student/" .. student_id
+  local path = "http://10.244.2.240:7000/student/" .. student_id
 
   return wrk.format(method, path, headers, nil)
 
