@@ -16,8 +16,8 @@ spec:
       containers:
         - image: kadle11/student-node-app:latest
           name: student-node-app
-          command: ["node", "client.js", "app:3000"]
-          # command: ["node", "client.js", "ws-client:3000"]
+          # command: ["node", "client.js", "app:3000"]
+          command: ["node", "client.js", "ws-client:3000"]
           ports:
             - containerPort: 7000
               name: http-server
