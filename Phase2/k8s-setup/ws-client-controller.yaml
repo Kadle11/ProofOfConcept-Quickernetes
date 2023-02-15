@@ -16,10 +16,13 @@ spec:
       containers:
         - image: kadle11/ws-sidecar:latest
           name: ws-client
-          command: ["node", "webSocketClient.js", "app:8080"]
+          command: ["node", "webSocketClient.js", "ws-server:8080"]
           ports:
             - containerPort: 3000
               name: ws-client
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 50m
       nodeSelector:
         kubernetes.io/hostname: node2

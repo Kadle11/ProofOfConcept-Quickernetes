@@ -5,15 +5,14 @@ metadata:
   labels:
     name: app
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 32000
       name: app
-    - port: 8080
-      targetPort: 8080
-      nodePort: 32500
-      name: ws-server
+    # - port: 8080
+    #   targetPort: 8080
+    #   nodePort: 32500
+    #   name: ws-server
   selector:
     name: student-node-app

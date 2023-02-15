@@ -1,5 +1,8 @@
 const WebSocket = require('ws');
 const request = require('request');
+const process = require('process')
+
+const URL = 'http://'+ process.argv[2] +'/student/'
 
 const webSocketServer = new WebSocket.WebSocketServer({ port: 8080 })
 
@@ -9,7 +12,8 @@ webSocketServer.on('connection', function connection(ws) {
 
     ws.on('message', async function message(data) {
 
-        request('http://localhost:3000/student/' + data, { json: true }, (err, res, body) => {
+        // console.log(URL + data)
+        request(URL + data, { json: true }, (err, res, body) => {
             let student = { name: body.name, registration: body.registration, roll: body.roll }
             let strData = JSON.stringify(student)
 

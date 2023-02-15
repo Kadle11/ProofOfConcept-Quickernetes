@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: ws-server
+  name: ws-server
+spec:
+  replicas: 1
+  selector:
+    name: ws-server
+  template:
+    metadata:
+      labels:
+        name: ws-server
+    spec:
+      containers:
+        - image: kadle11/ws-sidecar:latest
+          name: ws-server
+          command: ["node", "webSocketServer.js", "app:3000"]
+          ports:
+            - containerPort: 8080
+              name: ws-server
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 50m
+      nodeSelector:
+        kubernetes.io/hostname: node1
