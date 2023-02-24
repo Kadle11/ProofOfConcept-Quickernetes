@@ -90,6 +90,7 @@ ssh "${user}@${master}" "cd /users/${user}/ProofOfConcept-Quickernetes/Phase1/wk
 ssh "${user}@${master}" "cd /users/${user}/ProofOfConcept-Quickernetes/Phase1/wkld/wrk2; make -j"
 
 ssh "${user}@${master}" "kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml"
+sleep 5
 
 ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/metal-lb/"
 
