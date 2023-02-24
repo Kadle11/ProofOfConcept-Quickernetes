@@ -25,4 +25,19 @@ if [[ $1 == "master" ]]; then
 
   # Use kubeadm to generate a token and get the discovery hash
   cmd=$(kubeadm token create --print-join-command)
+
+
+  echo "Join Command: $cmd"
+  
+  mkdir -p $HOME/.kube
+  cp /etc/kubernetes/admin.conf $HOME/.kube/config
+  chown $(id -u):$(id -g) $HOME/.kube/config
 fi
+
+if [[ $1 == "worker" ]]; then
+  # Join the cluster
+  $2
+fi
+
+# Install flannel
+# sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml

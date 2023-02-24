@@ -60,12 +60,12 @@ wait
 
 ssh "${user}@${master}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/b1310d2e2c03c91e232506243d1ade71f99a4eef/k8s.sh > k8s.sh"
 ssh "${user}@${master}" "chmod +x k8s.sh"
-ssh "${user}@${master}" "sudo ./k8s.sh master ${#workers[@]}" &
+join_cmd=$(ssh "${user}@${master}" "sudo ./k8s.sh master ${#workers[@]}" | grep "Join Command:" | cut -d ':' -f 2 | xargs)
 
 for worker in "${workers[@]}"; do
   ssh "${user}@${worker}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/b1310d2e2c03c91e232506243d1ade71f99a4eef/k8s.sh > k8s.sh"
   ssh "${user}@${worker}" "chmod +x k8s.sh"
-  ssh "${user}@${worker}" "sudo ./k8s.sh" &
+  ssh "${user}@${worker}" "sudo ./k8s.sh worker $join_cmd" &
 done
 
 wait
@@ -77,7 +77,7 @@ ssh "${user}@${master}" "kubectl apply -f https://raw.githubusercontent.com/core
 # Actually apply the changes, returns nonzero returncode on errors only
 ssh "${user}@${master}" "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl apply -f - -n kube-system"
 
-# Get the Quickernetes Repositor
+# Get the Quickernetes Repository
 
 ssh "${user}@${master}" "git clone https://github.com/Kadle11/ProofOfConcept-Quickernetes.git"
 
