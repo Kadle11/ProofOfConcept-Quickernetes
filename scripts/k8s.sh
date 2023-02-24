@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Add kubernetes sources to apt
 apt-get install -y apt-transport-https curl
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
@@ -26,20 +25,4 @@ if [[ $1 == "master" ]]; then
 
   # Use kubeadm to generate a token and get the discovery hash
   cmd=$(kubeadm token create --print-join-command)
-
-  for i in $(seq 1 $2); do
-    while ! echo "${cmd}" | socat "TCP:node$i:1234" -; do
-      echo "Waiting for node$i to be ready"
-      sleep 5
-    done
-  done
-
-  mkdir -p $HOME/.kube
-  cp /etc/kubernetes/admin.conf $HOME/.kube/config
-  chown $(id -u):$(id -g) $HOME/.kube/config
-else
-  socat TCP-LISTEN:1234 - | bash
 fi
-
-# Install flannel
-# sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
