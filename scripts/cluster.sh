@@ -54,12 +54,12 @@ done
 
 wait
 
-ssh "${user}@${master}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/6e5c5b685643cbaa2cb996f923265aeb5b0219dc/k8s.sh > k8s.sh"
+ssh "${user}@${master}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/a9602d5008217c43db83ef114978de587a0e6a6a/k8s.sh > k8s.sh"
 ssh "${user}@${master}" "chmod +x k8s.sh"
 ssh "${user}@${master}" "sudo ./k8s.sh master ${#workers[@]}" &
 
 for worker in "${workers[@]}"; do
-  ssh "${user}@${worker}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/6e5c5b685643cbaa2cb996f923265aeb5b0219dc/k8s.sh > k8s.sh"
+  ssh "${user}@${worker}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/a9602d5008217c43db83ef114978de587a0e6a6a/k8s.sh > k8s.sh"
   ssh "${user}@${worker}" "chmod +x k8s.sh"
   ssh "${user}@${worker}" "sudo ./k8s.sh" &
 done
