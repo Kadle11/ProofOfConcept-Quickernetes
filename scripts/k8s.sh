@@ -27,8 +27,8 @@ if [[ $1 == "master" ]]; then
   # Use kubeadm to generate a token and get the discovery hash
   cmd=$(kubeadm token create --print-join-command)
 
-  for i in {1..$2}; do
-    while ! echo "${cmd}" | socat TCP:node$i:1234 -; do
+  for i in $(seq 1 $2); do
+    while ! echo "${cmd}" | socat "TCP:node$i:1234" -; do
       echo "Waiting for node$i to be ready"
       sleep 5
     done
