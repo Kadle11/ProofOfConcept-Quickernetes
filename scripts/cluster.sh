@@ -69,7 +69,6 @@ done
 
 wait
 
-#/bin/bash
 ssh "${user}@${master}" "sudo chown -R ${user} /users/${user}/.kube"
 
 ssh "${user}@${master}" "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
