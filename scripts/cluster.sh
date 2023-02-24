@@ -34,6 +34,7 @@ fi
 # node="${hostname%%.*}"
 IFS=',' read -r -a hostnames <<<"$hostnames_comma"
 for machine in "${hostnames[@]}"; do
+  ssh-keyscan "$machine" >> $HOME/.ssh/known_hosts
   hostname=$(ssh "${user}@${machine}" "hostname")
   if [[ $hostname == *"node0"* ]]; then
     master=$machine
