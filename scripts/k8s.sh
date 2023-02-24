@@ -28,14 +28,17 @@ if [[ $1 == "master" ]]; then
   cmd=$(kubeadm token create --print-join-command)
 
   for i in {1 .. $2}; do
-    echo "${cmd}" | socat TCP-LISTEN:1234 -
+    while ! echo "${cmd}" | socat TCP:node${i}:1234 -; do
+      echo "Waiting for node${i} to be ready"
+      sleep 5
+    done
   done
 
   mkdir -p $HOME/.kube
   cp /etc/kubernetes/admin.conf $HOME/.kube/config
   chown $(id -u):$(id -g) $HOME/.kube/config
 else
-  socat - TCP:node0:1234 | bash
+  socat TCP-LISTEN:1234 - | bash
 fi
 
 # Install flannel
