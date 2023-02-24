@@ -60,7 +60,7 @@ wait
 
 ssh "${user}@${master}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/aea712bd16c00a3a2f74291ade68ccd452eae9d5/k8s.sh > k8s.sh"
 ssh "${user}@${master}" "chmod +x k8s.sh"
-join_cmd=$(ssh "${user}@${master}" "sudo ./k8s.sh master ${#workers[@]}" | grep "Join Command:" | cut -d ':' -f 2 | xargs)
+join_cmd=$(ssh "${user}@${master}" "sudo ./k8s.sh master ${#workers[@]}" | grep "Join Command:" | cut -d ':' -f 2- | xargs)
 
 for worker in "${workers[@]}"; do
   ssh "${user}@${worker}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/aea712bd16c00a3a2f74291ade68ccd452eae9d5/k8s.sh > k8s.sh"
