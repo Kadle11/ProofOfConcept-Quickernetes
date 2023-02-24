@@ -1,5 +1,6 @@
 #!/bin/bash
 set -x
+set -e
 
 # Check that the script has two arguments
 while getopts ":h:u:" opt; do
@@ -48,8 +49,10 @@ echo "Workers: ${workers[@]}"
 for machine in ${hostnames[@]}; do
   ssh "${user}@${machine}" "curl https://gist.githubusercontent.com/vthurimella/6737b905be2953e2c420389f24d63f01/raw/f09e39c109d22a948b6b3608168477ded0087ef9/docker.sh > docker.sh"
   ssh "${user}@${machine}" "chmod +x docker.sh"
-  ssh "${user}@${machine}" "sudo ./docker.sh ${user}"
+  ssh "${user}@${machine}" "sudo ./docker.sh ${user}" &
 done
+
+wait
 
 ssh "${user}@${master}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/63a2b7c0ca51c550532fc1cfe76b275861c6f5f4/k8s.sh > k8s.sh"
 ssh "${user}@${master}" "chmod +x k8s.sh"
