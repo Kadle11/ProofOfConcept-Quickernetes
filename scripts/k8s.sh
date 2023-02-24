@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # Add kubernetes sources to apt
 apt-get install -y apt-transport-https curl
@@ -25,7 +26,6 @@ if [[ $1 == "master" ]]; then
 
   # Use kubeadm to generate a token and get the discovery hash
   cmd=$(kubeadm token create --print-join-command)
-
 
   echo "Join Command: $cmd"
   
