@@ -74,9 +74,6 @@ ssh "${user}@${master}" "sudo chown -R ${user} /users/${user}/.kube"
 
 ssh "${user}@${master}" "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
 
-# See what changes would be made, returns nonzero returncode if different
-ssh "${user}@${master}" "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl diff -f - -n kube-system"
-
 # Actually apply the changes, returns nonzero returncode on errors only
 ssh "${user}@${master}" "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl apply -f - -n kube-system"
 
