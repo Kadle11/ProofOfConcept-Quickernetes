@@ -3,7 +3,7 @@ set -x
 
 # Add kubernetes sources to apt
 apt-get install -y apt-transport-https curl
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add
 echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" >>~/kubernetes.list
 mv ~/kubernetes.list /etc/apt/sources.list.d
 apt-get update
