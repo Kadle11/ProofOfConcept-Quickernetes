@@ -58,12 +58,12 @@ done
 
 wait
 
-ssh "${user}@${master}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/b1310d2e2c03c91e232506243d1ade71f99a4eef/k8s.sh > k8s.sh"
+ssh "${user}@${master}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/fac0e6715c3cd5ceb3e85e0f76223b33e8e92fb1/k8s.sh > k8s.sh"
 ssh "${user}@${master}" "chmod +x k8s.sh"
 join_cmd=$(ssh "${user}@${master}" "sudo ./k8s.sh master ${#workers[@]}" | grep "Join Command:" | cut -d ':' -f 2 | xargs)
 
 for worker in "${workers[@]}"; do
-  ssh "${user}@${worker}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/b1310d2e2c03c91e232506243d1ade71f99a4eef/k8s.sh > k8s.sh"
+  ssh "${user}@${worker}" "curl https://gist.githubusercontent.com/vthurimella/977515d3dcd084b47211b12bf38798f3/raw/fac0e6715c3cd5ceb3e85e0f76223b33e8e92fb1/k8s.sh > k8s.sh"
   ssh "${user}@${worker}" "chmod +x k8s.sh"
   ssh "${user}@${worker}" "sudo ./k8s.sh worker $join_cmd" &
 done
