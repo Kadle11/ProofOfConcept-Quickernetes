@@ -5,7 +5,7 @@ metadata:
   labels:
     name: app
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 3000
       targetPort: 3000
