@@ -72,34 +72,50 @@ wait
 
 ssh "${user}@${master}" "sudo chown -R ${user} /users/${user}/.kube"
 
-ssh "${user}@${master}" "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
+# ssh "${user}@${master}" "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
 
-# Actually apply the changes, returns nonzero returncode on errors only
-ssh "${user}@${master}" "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl apply -f - -n kube-system"
+# # Actually apply the changes, returns nonzero returncode on errors only
+# ssh "${user}@${master}" "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl apply -f - -n kube-system"
 
-# Get the Quickernetes Repository
+# # Get the Quickernetes Repository
 
-ssh "${user}@${master}" "[ ! -d ProofOfConcept-Quickernetes ] && git clone https://github.com/Kadle11/ProofOfConcept-Quickernetes.git"
+# ssh "${user}@${master}" "[ ! -d ProofOfConcept-Quickernetes ] && git clone https://github.com/Kadle11/ProofOfConcept-Quickernetes.git"
 
-ssh "${user}@${master}" "cd ProofOfConcept-Quickernetes; git submodule init; git submodule update"
+# ssh "${user}@${master}" "cd ProofOfConcept-Quickernetes; git submodule init; git submodule update"
 
-ssh "${user}@${master}" "sudo apt-get install -y libssl-dev libz-dev luarocks"
-ssh "${user}@${master}" "sudo luarocks install luasocket"
+# ssh "${user}@${master}" "sudo apt-get install -y libssl-dev libz-dev luarocks"
+# ssh "${user}@${master}" "sudo luarocks install luasocket"
 
-ssh "${user}@${master}" "cd /users/${user}/ProofOfConcept-Quickernetes/Phase1/wkld/wrk; make -j"
-ssh "${user}@${master}" "cd /users/${user}/ProofOfConcept-Quickernetes/Phase1/wkld/wrk2; make -j"
+# ssh "${user}@${master}" "cd /users/${user}/ProofOfConcept-Quickernetes/Phase1/wkld/wrk; make -j"
+# ssh "${user}@${master}" "cd /users/${user}/ProofOfConcept-Quickernetes/Phase1/wkld/wrk2; make -j"
 
-ssh "${user}@${master}" "kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml"
-sleep 5
+# ssh "${user}@${master}" "kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml"
+# sleep 5
 
-ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/metal-lb/"
+# ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/metal-lb/"
 
-ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/metrics-server-components.yaml"
+# ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/metrics-server-components.yaml"
 
-if [[ $autoscale == true ]]; then
-  ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/"
-else
-  ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/"
-  ssh "${user}@${master}" "kubectl delete -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/client-hpa.yaml"
-  ssh "${user}@${master}" "kubectl delete -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/server-hpa.yaml"
-fi
+# if [[ $autoscale == true ]]; then
+#   ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/"
+# else
+#   ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/"
+#   ssh "${user}@${master}" "kubectl delete -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/client-hpa.yaml"
+#   ssh "${user}@${master}" "kubectl delete -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/server-hpa.yaml"
+# fi
+
+
+## Cilium Setup
+
+CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/master/stable.txt)
+CLI_ARCH=amd64
+
+ssh "${user}@${master}" "curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}"
+ssh "${user}@${master}" "sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum"
+ssh "${user}@${master}" "sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin"
+ssh "${user}@${master}" "rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}"
+
+ssh "${user}@${master}" "cilium install --cluster-name quickernetes --wait"
+ssh "${user}@${master}" "cilium status --wait"
+
+ssh "${user}@${master}" "cilium connectivity test"
