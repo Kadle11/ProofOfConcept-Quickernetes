@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: student-node-app
+  name: student-node-app
+spec:
+  replicas: {{replicas}}
+  selector:
+    name: student-node-app
+  template:
+    metadata:
+      labels:
+        name: student-node-app
+    spec:
+      containers:
+        - image: kadle11/student-node-app:latest
+          name: student-node-app
+          command: ["node", "server.js", "mongo"]
+          ports:
+            - containerPort: 3000
+              name: http-server
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 150m
+        # # Sidecar results in a failure to connect to MongoDB
+        # # Link: https://github.com/kubernetes/kubernetes/issues/61207
+        # # Fix: DNS Server Check - https://help.hcltechsw.com/connections/v6/admin/install/cp_prereq_kubernetes_dns.html
+        # - image: kadle11/ws-sidecar:latest
+        #   name: ws-server
+        #   command: ["node", "webSocketServer.js", "localhost:3000"]
+        #   ports:
+        #     - containerPort: 8080
+        #       name: ws-server
+        #   imagePullPolicy: Always
+        #   resources:
+        #     requests:
+        #       cpu: 50m
+      nodeSelector:
+        kubernetes.io/hostname: node1
