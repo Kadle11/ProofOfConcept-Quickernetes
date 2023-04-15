@@ -96,10 +96,10 @@ ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickern
 
 ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/metrics-server-components.yaml"
 
-if [[ $autoscale == true ]]; then
-  ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/"
-else
-  ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/"
-  ssh "${user}@${master}" "kubectl delete -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/client-hpa.yaml"
-  ssh "${user}@${master}" "kubectl delete -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/server-hpa.yaml"
-fi
+# if [[ $autoscale == true ]]; then
+#   ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/"
+# else
+#   ssh "${user}@${master}" "kubectl apply -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/"
+#   ssh "${user}@${master}" "kubectl delete -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/client-hpa.yaml"
+#   ssh "${user}@${master}" "kubectl delete -f /users/${user}/ProofOfConcept-Quickernetes/Phase1/k8s-setup/server-hpa.yaml"
+# fi
