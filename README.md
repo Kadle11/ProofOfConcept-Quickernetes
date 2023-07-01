@@ -36,7 +36,7 @@ They take customized lua scripts as inputs and simulate the workload and randomi
 
 To Run the Compose-Post workload with Wrk, 
 ```
-DEATHSTAR_HOME/wrk/wrk -D exp -t <num-threads> -c <num-conns> -d <duration>  -s DEATHSTAR_HOME/socialNetwork/wrk2/scripts/social-network/compose-post.lua http://<NGINX LOAD BALANCER IP>/wrk2-api/post/compose
+DEATHSTAR_HOME/wrk/wrk -t <num-threads> -c <num-conns> -d <duration>  -s DEATHSTAR_HOME/socialNetwork/wrk2/scripts/social-network/compose-post.lua http://<NGINX LOAD BALANCER IP>/wrk2-api/post/compose
 ```
 
 To find the Nginx Load Balancer IP Run - `kubectl get svc | grep nginx-thrift | awk '{print $3}'`
