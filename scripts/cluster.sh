@@ -120,3 +120,6 @@ sleep 30
 
 NGINX_IP=`ssh ${user}@${master} "kubectl get svc | grep nginx-thrift" | awk '{print $3}'` # Get the IP of the nginx-thrift service
 ssh "${user}@${master}" "cd /users/${user}/DeathStarBench/socialNetwork/; python3 scripts/init_social_graph.py --ip ${NGINX_IP}" # Initialize the database (Social Network Graph)
+
+# Replace the wrk2 scripts' IP addrs with the current IP.
+ssh "${user}@${master}" "cd /users/${user}/DeathStarBench/socialNetwork/; sed -i 's/localhost/${NGINX_IP}/g' wrk2/scripts/social-network/*.lua"
